@@ -10,15 +10,12 @@
 
 Name:          couchdb
 Version:       %{package_version}
-Release:       2%{?dist}
+Release:       3%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
 URL:           http://couchdb.apache.org/
-# The source packages needs to contain a git index. Generate with:
-#   git clone git://github.com/apache/couchdb.git -b 2.0.0-RC4
-#   tar -czf couchdb-2.0.0-RC4.tar.gz couchdb
-Source0:       couchdb-%{upstream_version}.tar.gz
+Source0:       https://couchdb-ci.s3-eu-west-1.amazonaws.com/release-candidate/apache-couchdb-%{upstream_version}.tar.gz
 Source1:       %{name}.service
 
 BuildRequires: autoconf
@@ -31,28 +28,11 @@ BuildRequires: erlang-erts >= R13B
 BuildRequires: erlang-eunit >= R15B
 BuildRequires: erlang-os_mon
 BuildRequires: erlang-xmerl
-BuildRequires: git
-BuildRequires: help2man
 BuildRequires: js-devel
 BuildRequires: libicu-devel
 BuildRequires: libtool
 BuildRequires: perl-Test-Harness
 BuildRequires: systemd
-
-#Requires:      erlang-crypto%{?_isa}
-#Requires:      erlang-erts%{?_isa} >= R16B
-#Requires:      erlang-ibrowse%{?_isa} >= 4.0.1
-#Requires:      erlang-inets%{?_isa}
-#Requires:      erlang-kernel%{?_isa}
-#Requires:      erlang-mochiweb%{?_isa}
-#Requires:      erlang-oauth%{?_isa}
-#Requires:      erlang-os_mon%{?_isa}
-#Requires:      erlang-sd_notify%{?_isa}
-#Requires:      erlang-snappy%{?_isa}
-#Requires:      erlang-ssl%{?_isa}
-#Requires:      erlang-stdlib%{?_isa} >= R16B
-#Requires:      erlang-tools%{?_isa}
-#Requires:      erlang-xmerl%{?_isa}
 
 Requires(pre): shadow-utils
 Requires(post): systemd
@@ -69,7 +49,7 @@ JavaScript acting as the default view definition language.
 
 
 %prep
-%setup -q -n couchdb
+%setup -q -n apache-couchdb-%{upstream_version}
 
 # Have conf in /etc/couchdb, not /opt/couchdb/etc
 sed -i 's|$ROOTDIR/etc/vm.args|/%{_sysconfdir}/%{name}/vm.args|' \
@@ -85,7 +65,7 @@ popd
 
 
 %build
-./configure --disable-docs
+./configure --skip-deps --disable-docs
 
 # Have conf in /etc/couchdb, not /opt/couchdb/etc
 sed -i 's|filename:join(code:root_dir(), "etc")|"%{_sysconfdir}/%{name}"|' \
@@ -137,6 +117,11 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Thu Sep 1 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-3
+- Use dist version from Apache instead of git sources
+- Remove unneeded Requires
+- Remove unneeded BuildRequires `help2man`
+
 * Wed Aug 31 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-2
 - Put conf files in /etc/couchdb instead of /opt/couchdb/etc
 
