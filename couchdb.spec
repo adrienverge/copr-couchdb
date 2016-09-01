@@ -6,11 +6,9 @@
 %define package_version  2.0.0RC4
 %define upstream_version 2.0.0-RC4
 
-%define nodejs_src https://rpm.nodesource.com/pub_4.x/el/7/x86_64/nodejs-4.5.0-1nodesource.el7.centos.x86_64.rpm
-
 Name:          couchdb
 Version:       %{package_version}
-Release:       3%{?dist}
+Release:       4%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -55,23 +53,15 @@ JavaScript acting as the default view definition language.
 sed -i 's|$ROOTDIR/etc/vm.args|/%{_sysconfdir}/%{name}/vm.args|' \
   rel/overlay/bin/couchdb
 
-# Install Node.js 4 and npm locally.
-# Cannot put as BuildRequires because Node.js 4 isn't packaged for CentOS 7.
-pushd %{_builddir}
-curl -s %{nodejs_src} | rpm2cpio - | cpio -idm
-sed -i 's|/usr/bin/node|/usr/bin/env node|g' \
-  usr/lib/node_modules/npm/bin/npm-cli.js
-popd
-
 
 %build
-./configure --skip-deps --disable-docs
+./configure --skip-deps
 
 # Have conf in /etc/couchdb, not /opt/couchdb/etc
 sed -i 's|filename:join(code:root_dir(), "etc")|"%{_sysconfdir}/%{name}"|' \
   src/config/src/config_app.erl
 
-PATH=%{_builddir}/usr/bin:$PATH make release %{?_smp_mflags}
+make release %{?_smp_mflags}
 
 
 %install
@@ -117,6 +107,10 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Thu Sep 1 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-4
+- Don't install `npm` because Fauxton is already built
+- Remove `--disable-docs` because they are already built
+
 * Thu Sep 1 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-3
 - Use dist version from Apache instead of git sources
 - Remove unneeded Requires
