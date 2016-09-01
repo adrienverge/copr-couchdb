@@ -8,7 +8,7 @@
 
 Name:          couchdb
 Version:       %{package_version}
-Release:       4%{?dist}
+Release:       5%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -55,7 +55,7 @@ sed -i 's|$ROOTDIR/etc/vm.args|/%{_sysconfdir}/%{name}/vm.args|' \
 
 
 %build
-./configure --skip-deps
+./configure --skip-deps --disable-docs
 
 # Have conf in /etc/couchdb, not /opt/couchdb/etc
 sed -i 's|filename:join(code:root_dir(), "etc")|"%{_sysconfdir}/%{name}"|' \
@@ -107,6 +107,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Thu Sep 1 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-5
+- Restore `--disable-docs` because they take 12 MiB
+
 * Thu Sep 1 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-4
 - Don't install `npm` because Fauxton is already built
 - Remove `--disable-docs` because they are already built
