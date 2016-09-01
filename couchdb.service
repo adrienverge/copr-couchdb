@@ -1,0 +1,13 @@
+[Unit]
+Description=CouchDB Server
+After=network.target
+
+[Service]
+ExecStart=/opt/couchdb/bin/couchdb
+User=couchdb
+Group=couchdb
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
