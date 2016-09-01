@@ -2,10 +2,6 @@
 #
 # Inspired from
 # http://copr-dist-git.fedorainfracloud.org/cgit/gorbyo/epel7-couchdb/couchdb.git/tree/couchdb.spec?h=epel7&id=6d5a4ac1e3f04981af41bbf6f49022754a83d416
-#
-# Build locally with:
-#   rpmbuild -bs couchdb.spec
-#   mock -r epel-7-x86_64 rebuild ~/rpmbuild/SRPMS/couchdb-2.0.0*.src.rpm
 
 %define package_version  2.0.0RC4
 %define upstream_version 2.0.0-RC4
