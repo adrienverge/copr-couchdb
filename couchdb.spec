@@ -14,7 +14,7 @@
 
 Name:          couchdb
 Version:       %{package_version}
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -75,6 +75,10 @@ JavaScript acting as the default view definition language.
 %prep
 %setup -q -n couchdb
 
+# Have conf in /etc/couchdb, not /opt/couchdb/etc
+sed -i 's|$ROOTDIR/etc/vm.args|/%{_sysconfdir}/%{name}/vm.args|' \
+  rel/overlay/bin/couchdb
+
 # Install Node.js 4 and npm locally.
 # Cannot put as BuildRequires because Node.js 4 isn't packaged for CentOS 7.
 pushd %{_builddir}
@@ -86,12 +90,23 @@ popd
 
 %build
 ./configure --disable-docs
+
+# Have conf in /etc/couchdb, not /opt/couchdb/etc
+sed -i 's|filename:join(code:root_dir(), "etc")|"%{_sysconfdir}/%{name}"|' \
+  src/config/src/config_app.erl
+
 PATH=%{_builddir}/usr/bin:$PATH make release %{?_smp_mflags}
 
 
 %install
 mkdir -p %{buildroot}/opt
 cp -r rel/couchdb %{buildroot}/opt
+
+# Have conf in /etc/couchdb, not /opt/couchdb/etc
+mkdir -p %{buildroot}%{_sysconfdir}
+mv %{buildroot}/opt/couchdb/etc %{buildroot}%{_sysconfdir}/%{name}
+mkdir %{buildroot}%{_sysconfdir}/%{name}/local.d
+mkdir %{buildroot}%{_sysconfdir}/%{name}/default.d
 
 install -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
 
@@ -114,9 +129,20 @@ getent passwd %{name} >/dev/null || \
 %files
 %defattr(-, %{name}, %{name})
 /opt/couchdb
+
+%dir %{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{name}/local.d
+%dir %{_sysconfdir}/%{name}/default.d
+%config %{_sysconfdir}/%{name}/default.ini
+%config(noreplace) %{_sysconfdir}/%{name}/local.ini
+%config(noreplace) %{_sysconfdir}/%{name}/vm.args
+
 %{_unitdir}/%{name}.service
 
 
 %changelog
+* Wed Aug 31 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-2
+- Put conf files in /etc/couchdb instead of /opt/couchdb/etc
+
 * Wed Aug 31 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-1
 - Initial RPM release
