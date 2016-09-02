@@ -8,13 +8,14 @@
 
 Name:          couchdb
 Version:       %{package_version}
-Release:       5%{?dist}
+Release:       6%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
 URL:           http://couchdb.apache.org/
 Source0:       https://couchdb-ci.s3-eu-west-1.amazonaws.com/release-candidate/apache-couchdb-%{upstream_version}.tar.gz
 Source1:       %{name}.service
+Patch1:        0001-Trigger-cookie-renewal-on-_session.patch
 
 BuildRequires: autoconf
 BuildRequires: autoconf-archive
@@ -48,6 +49,7 @@ JavaScript acting as the default view definition language.
 
 %prep
 %setup -q -n apache-couchdb-%{upstream_version}
+%patch1 -p1 -b .cookie-renewal
 
 # Have conf in /etc/couchdb, not /opt/couchdb/etc
 sed -i 's|$ROOTDIR/etc/vm.args|/%{_sysconfdir}/%{name}/vm.args|' \
@@ -107,6 +109,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Fri Sep 2 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-6
+- Patch https://github.com/apache/couchdb-couch/pull/194/commits/9970f18
+
 * Thu Sep 1 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-5
 - Restore `--disable-docs` because they take 12 MiB
 
