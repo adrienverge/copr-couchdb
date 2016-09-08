@@ -8,7 +8,7 @@
 
 Name:          couchdb
 Version:       %{package_version}
-Release:       6%{?dist}
+Release:       7%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -17,10 +17,6 @@ Source0:       https://couchdb-ci.s3-eu-west-1.amazonaws.com/release-candidate/a
 Source1:       %{name}.service
 Patch1:        0001-Trigger-cookie-renewal-on-_session.patch
 
-BuildRequires: autoconf
-BuildRequires: autoconf-archive
-BuildRequires: automake
-BuildRequires: curl-devel >= 7.18.0
 BuildRequires: erlang
 BuildRequires: erlang-asn1
 BuildRequires: erlang-erts >= R13B
@@ -29,8 +25,6 @@ BuildRequires: erlang-os_mon
 BuildRequires: erlang-xmerl
 BuildRequires: js-devel
 BuildRequires: libicu-devel
-BuildRequires: libtool
-BuildRequires: perl-Test-Harness
 BuildRequires: systemd
 
 Requires(pre): shadow-utils
@@ -65,6 +59,9 @@ sed -i 's|filename:join(code:root_dir(), "etc")|"%{_sysconfdir}/%{name}"|' \
 
 make release %{?_smp_mflags}
 
+# Store databases in /var/lib/couchdb
+sed -i 's|\./data\b|%{_sharedstatedir}/%{name}|g' rel/couchdb/etc/default.ini
+
 
 %install
 mkdir -p %{buildroot}/opt
@@ -78,11 +75,15 @@ mkdir %{buildroot}%{_sysconfdir}/%{name}/default.d
 
 install -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
 
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name}
+
+rmdir %{buildroot}/opt/couchdb/var/log %{buildroot}/opt/couchdb/var
+
 
 %pre
 getent group %{name} >/dev/null || groupadd -r %{name}
 getent passwd %{name} >/dev/null || \
-  useradd -r -g %{name} -d /opt/couchdb -s /sbin/nologin %{name}
+  useradd -r -g %{name} -d %{_sharedstatedir}/%{name} -s /sbin/nologin %{name}
 
 %post
 %systemd_post %{name}.service
@@ -95,20 +96,26 @@ getent passwd %{name} >/dev/null || \
 
 
 %files
-%defattr(-, %{name}, %{name})
 /opt/couchdb
 
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/local.d
 %dir %{_sysconfdir}/%{name}/default.d
-%config %{_sysconfdir}/%{name}/default.ini
-%config(noreplace) %{_sysconfdir}/%{name}/local.ini
-%config(noreplace) %{_sysconfdir}/%{name}/vm.args
+%config %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/default.ini
+%config(noreplace) %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/local.ini
+%config(noreplace) %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/vm.args
+
+%dir %attr(0755, %{name}, %{name}) %{_sharedstatedir}/%{name}
 
 %{_unitdir}/%{name}.service
 
 
 %changelog
+* Thu Sep 8 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-7
+- Store data in /var/lib/couchdb instead of /opt/couchdb/data
+- Remove unneeded BuildRequires
+- Remove unused /opt/couchdb/var/log dir
+
 * Fri Sep 2 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-6
 - Patch https://github.com/apache/couchdb-couch/pull/194/commits/9970f18
 
