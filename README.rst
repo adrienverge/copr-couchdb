@@ -1,8 +1,8 @@
 CouchDB 2.0
 ===========
 
-This repository provides unofficial packages of CouchDB 2.0 for CentOS 7. They
-are available at:
+This repository provides unofficial packages of CouchDB 2.0 for CentOS 7+ and
+Fedora 24+. They are available at:
 
 https://copr.fedorainfracloud.org/coprs/adrienverge/couchdb/
 
