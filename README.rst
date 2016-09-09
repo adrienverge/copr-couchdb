@@ -18,6 +18,19 @@ Install
 Hack
 ----
 
+Dirty:
+
+.. code:: shell
+
+ cp couchdb.service *.patch ~/rpmbuild/SOURCES \
+   && rpmbuild -ba couchdb.spec \
+   && sudo dnf remove -y couchdb \
+   && sudo dnf install -y ~/rpmbuild/RPMS/x86_64/couchdb-2.0.0*.x86_64.rpm \
+   && sudo systemctl restart couchdb \
+   && journalctl -fu couchdb
+
+Clean:
+
 .. code:: shell
 
  rpmbuild -bs couchdb.spec
