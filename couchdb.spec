@@ -8,7 +8,7 @@
 
 Name:          couchdb
 Version:       %{package_version}
-Release:       7%{?dist}
+Release:       8%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -16,6 +16,7 @@ URL:           http://couchdb.apache.org/
 Source0:       https://couchdb-ci.s3-eu-west-1.amazonaws.com/release-candidate/apache-couchdb-%{upstream_version}.tar.gz
 Source1:       %{name}.service
 Patch1:        0001-Trigger-cookie-renewal-on-_session.patch
+Patch2:        0002-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
 
 BuildRequires: erlang
 BuildRequires: erlang-asn1
@@ -44,18 +45,11 @@ JavaScript acting as the default view definition language.
 %prep
 %setup -q -n apache-couchdb-%{upstream_version}
 %patch1 -p1 -b .cookie-renewal
-
-# Have conf in /etc/couchdb, not /opt/couchdb/etc
-sed -i 's|$ROOTDIR/etc/vm.args|/%{_sysconfdir}/%{name}/vm.args|' \
-  rel/overlay/bin/couchdb
+%patch2 -p1 -b .config-from-env
 
 
 %build
 ./configure --skip-deps --disable-docs
-
-# Have conf in /etc/couchdb, not /opt/couchdb/etc
-sed -i 's|filename:join(code:root_dir(), "etc")|"%{_sysconfdir}/%{name}"|' \
-  src/config/src/config_app.erl
 
 make release %{?_smp_mflags}
 
@@ -111,6 +105,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Fri Sep 9 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-8
+- Add patch to take config files from environment
+
 * Thu Sep 8 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-7
 - Store data in /var/lib/couchdb instead of /opt/couchdb/data
 - Remove unneeded BuildRequires

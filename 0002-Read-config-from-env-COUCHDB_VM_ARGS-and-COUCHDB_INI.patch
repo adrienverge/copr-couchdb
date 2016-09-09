@@ -1,0 +1,28 @@
+From 70221f457752266278945ca1f71c53a7f8a037b3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Adrien=20Verg=C3=A9?= <adrienverge@gmail.com>
+Date: Fri, 9 Sep 2016 11:42:02 +0200
+Subject: [PATCH] Read config from env COUCHDB_VM_ARGS and COUCHDB_INI_FILES
+
+---
+ rel/overlay/bin/couchdb | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/rel/overlay/bin/couchdb b/rel/overlay/bin/couchdb
+index f64bd44..6a70ac1 100755
+--- a/rel/overlay/bin/couchdb
++++ b/rel/overlay/bin/couchdb
+@@ -26,6 +26,10 @@ export BINDIR=$ROOTDIR/erts-$ERTS_VSN/bin
+ export EMU=beam
+ export PROGNAME=`echo $0 | sed 's/.*\///'`
+ 
++[ -z ${COUCHDB_VM_ARGS+x} ] && COUCHDB_VM_ARGS=$ROOTDIR/etc/vm.args
++[ -z ${COUCHDB_INI_FILES+x} ] && COUCHDB_INI_FILES=
++
+ exec $BINDIR/erlexec -boot $ROOTDIR/releases/$APP_VSN/couchdb \
+-     -args_file $ROOTDIR/etc/vm.args \
++     -args_file $COUCHDB_VM_ARGS \
++     -couch_ini $COUCHDB_INI_FILES \
+      -config $ROOTDIR/releases/$APP_VSN/sys.config
+-- 
+2.7.4
+
