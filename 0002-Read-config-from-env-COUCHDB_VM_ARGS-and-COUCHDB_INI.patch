@@ -15,14 +15,14 @@ index f64bd44..6a70ac1 100755
  export EMU=beam
  export PROGNAME=`echo $0 | sed 's/.*\///'`
  
-+[ -z ${COUCHDB_VM_ARGS+x} ] && COUCHDB_VM_ARGS=$ROOTDIR/etc/vm.args
++[ -z ${COUCHDB_VM_ARGS+x} ] && COUCHDB_VM_ARGS="$ROOTDIR/etc/vm.args"
 +[ -z ${COUCHDB_INI_FILES+x} ] && COUCHDB_INI_FILES=
 +
- exec $BINDIR/erlexec -boot $ROOTDIR/releases/$APP_VSN/couchdb \
--     -args_file $ROOTDIR/etc/vm.args \
-+     -args_file $COUCHDB_VM_ARGS \
+ exec "$BINDIR/erlexec" -boot "$ROOTDIR/releases/$APP_VSN/couchdb" \
+-     -args_file "$ROOTDIR/etc/vm.args" \
++     -args_file "$COUCHDB_VM_ARGS" \
 +     -couch_ini $COUCHDB_INI_FILES \
-      -config $ROOTDIR/releases/$APP_VSN/sys.config
+      -config "$ROOTDIR/releases/$APP_VSN/sys.config"
 -- 
 2.7.4
 

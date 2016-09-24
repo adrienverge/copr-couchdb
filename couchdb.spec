@@ -3,17 +3,14 @@
 # Inspired from
 # http://copr-dist-git.fedorainfracloud.org/cgit/gorbyo/epel7-couchdb/couchdb.git/tree/couchdb.spec?h=epel7&id=6d5a4ac1e3f04981af41bbf6f49022754a83d416
 
-%define package_version  2.0.0RC4
-%define upstream_version 2.0.0-RC4
-
 Name:          couchdb
-Version:       %{package_version}
-Release:       8%{?dist}
+Version:       2.0.0
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
 URL:           http://couchdb.apache.org/
-Source0:       https://couchdb-ci.s3-eu-west-1.amazonaws.com/release-candidate/apache-couchdb-%{upstream_version}.tar.gz
+Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/%{version}/apache-couchdb-%{version}.tar.gz
 Source1:       %{name}.service
 Patch1:        0001-Trigger-cookie-renewal-on-_session.patch
 Patch2:        0002-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
@@ -26,7 +23,6 @@ BuildRequires: erlang-os_mon
 BuildRequires: erlang-xmerl
 BuildRequires: js-devel
 BuildRequires: libicu-devel
-BuildRequires: systemd
 
 Requires(pre): shadow-utils
 Requires(post): systemd
@@ -43,7 +39,7 @@ JavaScript acting as the default view definition language.
 
 
 %prep
-%setup -q -n apache-couchdb-%{upstream_version}
+%setup -q -n apache-couchdb-%{version}
 %patch1 -p1 -b .cookie-renewal
 %patch2 -p1 -b .config-from-env
 
@@ -105,6 +101,11 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Sat Sep 24 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0-1
+- Update to stable version 2.0.0
+- Update patch to take config files from environment
+- Remove unneeded systemd BuildRequires
+
 * Fri Sep 9 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0RC4-8
 - Add patch to take config files from environment
 
