@@ -5,7 +5,7 @@
 
 Name:          couchdb
 Version:       2.0.0
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -52,10 +52,14 @@ make release %{?_smp_mflags}
 # Store databases in /var/lib/couchdb
 sed -i 's|\./data\b|%{_sharedstatedir}/%{name}|g' rel/couchdb/etc/default.ini
 
+echo -e "#!/bin/sh\n/opt/couchdb/bin/couchdb" >usr-bin-couchdb
+
 
 %install
 mkdir -p %{buildroot}/opt
 cp -r rel/couchdb %{buildroot}/opt
+
+install -D -m 755 usr-bin-couchdb %{buildroot}%{_bindir}/%{name}
 
 # Have conf in /etc/couchdb, not /opt/couchdb/etc
 mkdir -p %{buildroot}%{_sysconfdir}
@@ -87,6 +91,7 @@ getent passwd %{name} >/dev/null || \
 
 %files
 /opt/couchdb
+%{_bindir}/%{name}
 
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/local.d
@@ -101,6 +106,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Sat Sep 24 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0-2
+- Provide a launcher script in /usr/bin
+
 * Sat Sep 24 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0-1
 - Update to stable version 2.0.0
 - Update patch to take config files from environment
