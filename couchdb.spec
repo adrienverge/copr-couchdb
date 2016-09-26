@@ -5,13 +5,14 @@
 
 Name:          couchdb
 Version:       2.0.0
-Release:       2%{?dist}
+Release:       3%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
 URL:           http://couchdb.apache.org/
 Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/%{version}/apache-couchdb-%{version}.tar.gz
 Source1:       %{name}.service
+Source2:       usr-bin-couchdb
 Patch1:        0001-Trigger-cookie-renewal-on-_session.patch
 Patch2:        0002-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
 
@@ -52,14 +53,12 @@ make release %{?_smp_mflags}
 # Store databases in /var/lib/couchdb
 sed -i 's|\./data\b|%{_sharedstatedir}/%{name}|g' rel/couchdb/etc/default.ini
 
-echo -e "#!/bin/sh\n/opt/couchdb/bin/couchdb" >usr-bin-couchdb
-
 
 %install
 mkdir -p %{buildroot}/opt
 cp -r rel/couchdb %{buildroot}/opt
 
-install -D -m 755 usr-bin-couchdb %{buildroot}%{_bindir}/%{name}
+install -D -m 755 %{SOURCE2} %{buildroot}%{_bindir}/%{name}
 
 # Have conf in /etc/couchdb, not /opt/couchdb/etc
 mkdir -p %{buildroot}%{_sysconfdir}
@@ -106,6 +105,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Sep 26 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0-3
+- Forward signals received by launcher script
+
 * Sat Sep 24 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0-2
 - Provide a launcher script in /usr/bin
 
