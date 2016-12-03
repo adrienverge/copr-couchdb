@@ -5,7 +5,7 @@
 
 Name:          couchdb
 Version:       2.0.0
-Release:       3%{?dist}
+Release:       4%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -105,6 +105,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Sat Dec 3 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0-4
+- Improve signal forwarding (both SIGINT and SIGTERM)
+
 * Mon Sep 26 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0-3
 - Forward signals received by launcher script
 

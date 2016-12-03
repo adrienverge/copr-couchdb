@@ -22,7 +22,7 @@ Dirty:
 
 .. code:: shell
 
- cp couchdb.service *.patch ~/rpmbuild/SOURCES \
+ cp couchdb.service *.patch usr-bin-couchdb ~/rpmbuild/SOURCES \
    && rpmbuild -ba couchdb.spec \
    && sudo dnf remove -y couchdb \
    && sudo dnf install -y ~/rpmbuild/RPMS/x86_64/couchdb-2.0.0*.x86_64.rpm \
@@ -33,5 +33,6 @@ Clean:
 
 .. code:: shell
 
- rpmbuild -bs couchdb.spec
+ cp couchdb.service *.patch usr-bin-couchdb ~/rpmbuild/SOURCES \
+   && rpmbuild -bs couchdb.spec
  mock -r epel-7-x86_64 rebuild ~/rpmbuild/SRPMS/couchdb-2.0.0*.src.rpm
