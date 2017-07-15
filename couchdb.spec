@@ -5,7 +5,7 @@
 
 Name:          couchdb
 Version:       2.0.0
-Release:       4%{?dist}
+Release:       5%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -13,8 +13,7 @@ URL:           http://couchdb.apache.org/
 Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/%{version}/apache-couchdb-%{version}.tar.gz
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
-Patch1:        0001-Trigger-cookie-renewal-on-_session.patch
-Patch2:        0002-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
+Patch1:        0002-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
 
 BuildRequires: erlang
 BuildRequires: erlang-asn1
@@ -41,8 +40,7 @@ JavaScript acting as the default view definition language.
 
 %prep
 %setup -q -n apache-couchdb-%{version}
-%patch1 -p1 -b .cookie-renewal
-%patch2 -p1 -b .config-from-env
+%patch1 -p1 -b .config-from-env
 
 
 %build
@@ -105,6 +103,10 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Sat Jul 15 2017  Adrien Vergé <adrienverge@gmail.com> 2.0.0-5
+- Remove patch https://github.com/apache/couchdb-couch/pull/194/commits/9970f18
+- Rebuild to fix view doc error in Fedora 26
+
 * Sat Dec 3 2016 Adrien Vergé <adrienverge@gmail.com> 2.0.0-4
 - Improve signal forwarding (both SIGINT and SIGTERM)
 
