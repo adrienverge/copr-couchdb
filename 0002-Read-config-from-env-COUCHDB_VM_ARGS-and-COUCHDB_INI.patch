@@ -11,7 +11,7 @@ diff --git a/rel/overlay/bin/couchdb b/rel/overlay/bin/couchdb
 index f64bd44..6a70ac1 100755
 --- a/rel/overlay/bin/couchdb
 +++ b/rel/overlay/bin/couchdb
-@@ -26,6 +26,10 @@ export BINDIR=$ROOTDIR/erts-$ERTS_VSN/bin
+@@ -26,6 +26,10 @@
  export EMU=beam
  export PROGNAME=`echo $0 | sed 's/.*\///'`
  
@@ -22,7 +22,7 @@ index f64bd44..6a70ac1 100755
 -     -args_file "$ROOTDIR/etc/vm.args" \
 +     -args_file "$COUCHDB_VM_ARGS" \
 +     -couch_ini $COUCHDB_INI_FILES \
-      -config "$ROOTDIR/releases/$APP_VSN/sys.config"
+      -config "$ROOTDIR/releases/$APP_VSN/sys.config" "$@"
 -- 
 2.7.4
 

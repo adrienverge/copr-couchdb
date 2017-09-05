@@ -4,8 +4,8 @@
 # http://copr-dist-git.fedorainfracloud.org/cgit/gorbyo/epel7-couchdb/couchdb.git/tree/couchdb.spec?h=epel7&id=6d5a4ac1e3f04981af41bbf6f49022754a83d416
 
 Name:          couchdb
-Version:       2.0.0
-Release:       5%{?dist}
+Version:       2.1.0
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -61,8 +61,6 @@ install -D -m 755 %{SOURCE2} %{buildroot}%{_bindir}/%{name}
 # Have conf in /etc/couchdb, not /opt/couchdb/etc
 mkdir -p %{buildroot}%{_sysconfdir}
 mv %{buildroot}/opt/couchdb/etc %{buildroot}%{_sysconfdir}/%{name}
-mkdir %{buildroot}%{_sysconfdir}/%{name}/local.d
-mkdir %{buildroot}%{_sysconfdir}/%{name}/default.d
 
 install -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
 
@@ -90,10 +88,9 @@ getent passwd %{name} >/dev/null || \
 /opt/couchdb
 %{_bindir}/%{name}
 
-%dir %{_sysconfdir}/%{name}
-%dir %{_sysconfdir}/%{name}/local.d
-%dir %{_sysconfdir}/%{name}/default.d
+%config %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/default.d/README
 %config %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/default.ini
+%config %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/local.d/README
 %config(noreplace) %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/local.ini
 %config(noreplace) %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/vm.args
 
@@ -103,6 +100,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue Sep 5 2017 Adrien Vergé <adrienverge@gmail.com> 2.1.0-1
+- Update to new upstream version
+
 * Sat Jul 15 2017  Adrien Vergé <adrienverge@gmail.com> 2.0.0-5
 - Remove patch https://github.com/apache/couchdb-couch/pull/194/commits/9970f18
 - Rebuild to fix view doc error in Fedora 26
