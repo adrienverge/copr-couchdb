@@ -6,7 +6,7 @@ clean_exit() {
 
 trap clean_exit EXIT
 
-/opt/couchdb/bin/couchdb &
+/opt/couchdb/bin/couchdb "$@" &
 child=$!
 
 wait $child

@@ -3,9 +3,13 @@
 # Inspired from
 # http://copr-dist-git.fedorainfracloud.org/cgit/gorbyo/epel7-couchdb/couchdb.git/tree/couchdb.spec?h=epel7&id=6d5a4ac1e3f04981af41bbf6f49022754a83d416
 
+# To prevent installation errors that appeared since version 2.1.1
+# (file /usr/lib/.build-id/... conflicts with file from package erlang...)
+%global _build_id_links none
+
 Name:          couchdb
-Version:       2.1.0
-Release:       2%{?dist}
+Version:       2.1.1
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -100,6 +104,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue Dec 5 2017 Adrien Vergé <adrienverge@gmail.com> 2.1.1-1
+- Update to new upstream version
+
 * Fri Oct 6 2017 Adrien Vergé <adrienverge@gmail.com> 2.1.0-2
 - Increase number of open file descriptors
 
