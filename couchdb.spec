@@ -9,7 +9,7 @@
 
 Name:          couchdb
 Version:       2.1.1
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -104,6 +104,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Apr 9 2018 Adrien Vergé <adrienverge@gmail.com> 2.1.1-2
+- Increase number of open file descriptors
+
 * Tue Dec 5 2017 Adrien Vergé <adrienverge@gmail.com> 2.1.1-1
 - Update to new upstream version
 
