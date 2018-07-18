@@ -3,10 +3,6 @@
 # Inspired from
 # http://copr-dist-git.fedorainfracloud.org/cgit/gorbyo/epel7-couchdb/couchdb.git/tree/couchdb.spec?h=epel7&id=6d5a4ac1e3f04981af41bbf6f49022754a83d416
 
-# To prevent installation errors that appeared since version 2.1.1
-# (file /usr/lib/.build-id/... conflicts with file from package erlang...)
-%global _build_id_links none
-
 Name:          couchdb
 Version:       2.1.1
 Release:       2%{?dist}
