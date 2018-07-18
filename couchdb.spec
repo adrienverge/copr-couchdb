@@ -21,6 +21,8 @@ BuildRequires: erlang-erts >= R13B
 BuildRequires: erlang-eunit >= R15B
 BuildRequires: erlang-os_mon
 BuildRequires: erlang-xmerl
+BuildRequires: gcc
+BuildRequires: gcc-c++
 BuildRequires: js-devel
 BuildRequires: libicu-devel
 
