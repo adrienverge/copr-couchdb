@@ -4,8 +4,8 @@
 # http://copr-dist-git.fedorainfracloud.org/cgit/gorbyo/epel7-couchdb/couchdb.git/tree/couchdb.spec?h=epel7&id=6d5a4ac1e3f04981af41bbf6f49022754a83d416
 
 Name:          couchdb
-Version:       2.1.1
-Release:       2%{?dist}
+Version:       2.1.2
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -26,6 +26,7 @@ BuildRequires: gcc-c++
 BuildRequires: js-devel
 BuildRequires: libicu-devel
 
+Requires: couch-js
 Requires(pre): shadow-utils
 Requires(post): systemd
 Requires(preun): systemd
@@ -102,6 +103,10 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Jul 16 2018 Adrien Vergé <adrienverge@gmail.com> 2.1.2-1
+- Update to new upstream version
+- Build our custom couch-js like described on https://github.com/apache/couchdb-pkg/tree/7768c00/js
+
 * Mon Apr 9 2018 Adrien Vergé <adrienverge@gmail.com> 2.1.1-2
 - Increase number of open file descriptors
 

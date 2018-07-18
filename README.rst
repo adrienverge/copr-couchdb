@@ -45,3 +45,18 @@ Clean:
  cp couchdb.service *.patch usr-bin-couchdb ~/rpmbuild/SOURCES \
    && rpmbuild -bs couchdb.spec
  mock -r epel-7-x86_64 rebuild ~/rpmbuild/SRPMS/couchdb-2.*.src.rpm
+
+Custom couch-js package
+-----------------------
+
+We need to compile and ship our own ``js`` package, because of reasons
+described at https://github.com/apache/couchdb-pkg/tree/7768c00/js.
+The SRPM can be quickly built by running:
+
+.. code:: shell
+
+ git clone git@github.com:apache/couchdb-pkg.git /tmp/couchdb-pkg
+ cd /tmp/couchdb-pkg
+ cp js/src/js185-1.0.0.tar.gz js/rpm/SOURCES/* ~/rpmbuild/SOURCES/
+ rpmbuild -bs js/rpm/SPECS/js.spec
+ mock -r epel-7-x86_64 rebuild ~/rpmbuild/SRPMS/couch-js-1.8.5-21.fc28.src.rpm
