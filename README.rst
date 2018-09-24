@@ -6,8 +6,8 @@ Fedora 24+. They are available at:
 
 https://copr.fedorainfracloud.org/coprs/adrienverge/couchdb/
 
-Install
--------
+Use the repo to install CouchDB
+-------------------------------
 
 Fedora:
 
@@ -24,10 +24,10 @@ CentOS:
  sudo yum copr enable adrienverge/couchdb
  sudo yum install couchdb
 
-Hack
-----
+Hack and rebuild packages locally
+---------------------------------
 
-Dirty:
+Quick and dirty, on your own system:
 
 .. code:: shell
 
@@ -38,13 +38,25 @@ Dirty:
    && sudo systemctl restart couchdb \
    && journalctl -fu couchdb
 
-Clean:
+Cleanly, for CentOS 7:
 
 .. code:: shell
 
  cp couchdb.service *.patch usr-bin-couchdb ~/rpmbuild/SOURCES \
-   && rpmbuild -bs couchdb.spec
- mock -r epel-7-x86_64 rebuild ~/rpmbuild/SRPMS/couchdb-2.*.src.rpm
+   && rpmbuild -bs couchdb.spec && \
+ mock -r epel-7-x86_64 --rebuild ~/rpmbuild/SRPMS/couchdb-2.*.src.rpm
+
+For CentOS (where Erlang 17+ is not packaged), you need to add this to
+``/etc/mock/epel-7-x86_64.cfg``:
+
+.. code::
+
+ [erlang-solutions]
+ name=Centos $releasever - $basearch - Erlang Solutions
+ baseurl=http://packages.erlang-solutions.com/rpm/centos/$releasever/$basearch
+ gpgcheck=0
+ gpgkey=http://packages.erlang-solutions.com/debian/erlang_solutions.asc
+ enabled=1
 
 Custom couch-js package
 -----------------------
@@ -59,4 +71,4 @@ The SRPM can be quickly built by running:
  cd /tmp/couchdb-pkg
  cp js/src/js185-1.0.0.tar.gz js/rpm/SOURCES/* ~/rpmbuild/SOURCES/
  rpmbuild -bs js/rpm/SPECS/js.spec
- mock -r epel-7-x86_64 rebuild ~/rpmbuild/SRPMS/couch-js-1.8.5-21.fc28.src.rpm
+ mock -r epel-7-x86_64 --rebuild ~/rpmbuild/SRPMS/couch-js-1.8.5-21.fc28.src.rpm

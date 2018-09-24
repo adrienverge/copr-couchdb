@@ -3,9 +3,12 @@
 # Inspired from
 # http://copr-dist-git.fedorainfracloud.org/cgit/gorbyo/epel7-couchdb/couchdb.git/tree/couchdb.spec?h=epel7&id=6d5a4ac1e3f04981af41bbf6f49022754a83d416
 
+# Needed to avoid build error: No build ID note found in [...].o
+%undefine _missing_build_ids_terminate_build
+
 Name:          couchdb
 Version:       2.1.2
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -15,12 +18,13 @@ Source1:       %{name}.service
 Source2:       usr-bin-couchdb
 Patch1:        0002-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
 
-BuildRequires: erlang
-BuildRequires: erlang-asn1
-BuildRequires: erlang-erts >= R13B
-BuildRequires: erlang-eunit >= R15B
-BuildRequires: erlang-os_mon
-BuildRequires: erlang-xmerl
+%if 0%{?rhel}
+# Needs packages.erlang-solutions.com repo in /etc/mock/epel-7-x86_64.cfg,
+# because Erlang 17+ is not in official CentOS or EPEL repos.
+BuildRequires: esl-erlang = 20.3.8.6
+%else
+BuildRequires: erlang >= 20, erlang < 21
+%endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: js-devel
@@ -103,6 +107,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Sep 24 2018 Adrien Vergé <adrienverge@gmail.com> 2.1.2-2
+- Use Erlang 20 (previously: 16)
+
 * Mon Jul 16 2018 Adrien Vergé <adrienverge@gmail.com> 2.1.2-1
 - Update to new upstream version
 - Build our custom couch-js like described on https://github.com/apache/couchdb-pkg/tree/7768c00/js
