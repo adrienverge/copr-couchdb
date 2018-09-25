@@ -16,7 +16,8 @@ URL:           http://couchdb.apache.org/
 Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/%{version}/apache-couchdb-%{version}.tar.gz
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
-Patch1:        0002-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
+Patch1:        0001-Explicit-Python-version-in-scripts.patch
+Patch2:        0002-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
 
 %if 0%{?rhel}
 # Needs packages.erlang-solutions.com repo in /etc/mock/epel-7-x86_64.cfg,
@@ -47,7 +48,8 @@ JavaScript acting as the default view definition language.
 
 %prep
 %setup -q -n apache-couchdb-%{version}
-%patch1 -p1 -b .config-from-env
+%patch1 -p1
+%patch2 -p1
 
 
 %build
