@@ -7,8 +7,8 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       2.1.2
-Release:       2%{?dist}
+Version:       2.3.0
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -16,8 +16,7 @@ URL:           http://couchdb.apache.org/
 Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/%{version}/apache-couchdb-%{version}.tar.gz
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
-Patch1:        0001-Explicit-Python-version-in-scripts.patch
-Patch2:        0002-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
+Patch1:        0002-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
 
 %if 0%{?rhel}
 # Needs packages.erlang-solutions.com repo in /etc/mock/epel-7-x86_64.cfg,
@@ -49,7 +48,6 @@ JavaScript acting as the default view definition language.
 %prep
 %setup -q -n apache-couchdb-%{version}
 %patch1 -p1
-%patch2 -p1
 
 
 %build
@@ -109,6 +107,10 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue Dec 11 2018 Adrien Vergé <adrienverge@gmail.com> 2.3.0-1
+- Update to new upstream version (skip 2.2 that has bugs)
+- Customizing args file is now supported upstream
+
 * Mon Sep 24 2018 Adrien Vergé <adrienverge@gmail.com> 2.1.2-2
 - Use Erlang 20 (previously: 16)
 

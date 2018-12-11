@@ -7,22 +7,22 @@ Subject: [PATCH] Read config from env COUCHDB_VM_ARGS and COUCHDB_INI_FILES
  rel/overlay/bin/couchdb | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/rel/overlay/bin/couchdb b/rel/overlay/bin/couchdb
+diff --git a/rel/files/couchdb.in b/rel/files/couchdb.in
 index f64bd44..6a70ac1 100755
---- a/rel/overlay/bin/couchdb
-+++ b/rel/overlay/bin/couchdb
-@@ -26,6 +26,10 @@
- export EMU=beam
- export PROGNAME=`echo $0 | sed 's/.*\///'`
+--- a/rel/files/couchdb.in
++++ b/rel/files/couchdb.in
+@@ -30,8 +30,10 @@
+ export COUCHDB_QUERY_SERVER_COFFEESCRIPT="{{prefix}}/bin/couchjs {{prefix}}/share/server/main-coffee.js"
  
-+[ -z ${COUCHDB_VM_ARGS+x} ] && COUCHDB_VM_ARGS="$ROOTDIR/etc/vm.args"
+ ARGS_FILE="${COUCHDB_ARGS_FILE:-$ROOTDIR/etc/vm.args}"
 +[ -z ${COUCHDB_INI_FILES+x} ] && COUCHDB_INI_FILES=
-+
+ SYSCONFIG_FILE="${COUCHDB_SYSCONFIG_FILE:-$ROOTDIR/releases/$APP_VSN/sys.config}"
+ 
  exec "$BINDIR/erlexec" -boot "$ROOTDIR/releases/$APP_VSN/couchdb" \
--     -args_file "$ROOTDIR/etc/vm.args" \
-+     -args_file "$COUCHDB_VM_ARGS" \
-+     -couch_ini $COUCHDB_INI_FILES \
-      -config "$ROOTDIR/releases/$APP_VSN/sys.config" "$@"
+      -args_file "${ARGS_FILE}" \
++     -couch_ini ${COUCHDB_INI_FILES} \
+      -config "${SYSCONFIG_FILE}" "$@"
+ 
 -- 
 2.7.4
 
