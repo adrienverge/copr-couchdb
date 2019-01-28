@@ -8,7 +8,7 @@
 
 Name:          couchdb
 Version:       2.3.0
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -17,6 +17,7 @@ Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
 Patch1:        0001-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
+Patch2:        0002-Compaction-Add-snooze_period_ms-for-finer-tuning.patch
 
 %if 0%{?rhel}
 # Needs packages.erlang-solutions.com repo in /etc/mock/epel-7-x86_64.cfg,
@@ -48,6 +49,7 @@ JavaScript acting as the default view definition language.
 %prep
 %setup -q -n apache-couchdb-%{version}
 %patch1 -p1
+%patch2 -p1
 
 
 %build
@@ -107,6 +109,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Jan 28 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.0-2
+- Apply a patch to add snooze_period_ms for finer tuning, see https://github.com/apache/couchdb/pull/1880
+
 * Tue Dec 11 2018 Adrien Vergé <adrienverge@gmail.com> 2.3.0-1
 - Update to new upstream version (skip 2.2 that has bugs)
 - Customizing args file is now supported upstream
