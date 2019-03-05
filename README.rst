@@ -24,6 +24,16 @@ CentOS:
  sudo yum copr enable adrienverge/couchdb
  sudo yum install couchdb
 
+Running
+-------
+
+When using this repo, you shouldn't just call ``couchdb``. Instead, use the
+systemd service with:
+
+.. code:: shell
+
+ sudo systemctl start couchdb
+
 Hack and rebuild packages locally
 ---------------------------------
 
