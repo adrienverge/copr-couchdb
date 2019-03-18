@@ -7,8 +7,8 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       2.3.0
-Release:       2%{?dist}
+Version:       2.3.1
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -17,14 +17,18 @@ Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
 Patch1:        0001-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
-Patch2:        0002-Compaction-Add-snooze_period_ms-for-finer-tuning.patch
 
 %if 0%{?rhel}
 # Needs packages.erlang-solutions.com repo in /etc/mock/epel-7-x86_64.cfg,
 # because Erlang 17+ is not in official CentOS or EPEL repos.
-BuildRequires: esl-erlang = 20.3.8.6
+BuildRequires: esl-erlang = 21.3
 %else
+%if 0%{?fedora} < 30
+# Erlang 21 is not packaged for Fedora 29 and lower
 BuildRequires: erlang >= 20, erlang < 21
+%else
+BuildRequires: erlang >= 21, erlang < 22
+%endif
 %endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
@@ -49,7 +53,6 @@ JavaScript acting as the default view definition language.
 %prep
 %setup -q -n apache-couchdb-%{version}
 %patch1 -p1
-%patch2 -p1
 
 
 %build
@@ -109,6 +112,10 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Mar 18 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-1
+- Update to new upstream version
+- Use Erlang 21 (previously: 20) for CentOS 7 and Fedora 30+
+
 * Mon Jan 28 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.0-2
 - Apply a patch to add snooze_period_ms for finer tuning, see https://github.com/apache/couchdb/pull/1880
 
