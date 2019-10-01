@@ -17,13 +17,14 @@ Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
 Patch1:        0001-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
+Patch2:        0002-Support-Erlang-22.patch
 
 %if 0%{?el7}
 # Needs packages.erlang-solutions.com repo in /etc/mock/epel-7-x86_64.cfg,
 # because Erlang 17+ is not in official CentOS 7 or EPEL 7 repos.
-BuildRequires: esl-erlang = 21.3
+BuildRequires: esl-erlang = 22.1
 %else
-BuildRequires: erlang >= 21, erlang < 22
+BuildRequires: erlang >= 21, erlang < 23
 %endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
@@ -48,6 +49,7 @@ JavaScript acting as the default view definition language.
 %prep
 %setup -q -n apache-couchdb-%{version}
 %patch1 -p1
+%patch2 -p1
 
 
 %build
