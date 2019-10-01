@@ -8,7 +8,7 @@
 
 Name:          couchdb
 Version:       2.3.1
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -32,7 +32,7 @@ BuildRequires: erlang >= 21, erlang < 22
 %endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
-BuildRequires: js-devel
+BuildRequires: couch-js-devel
 BuildRequires: libicu-devel
 
 Requires: couch-js
@@ -112,6 +112,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue Oct 1 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-2
+- Use couch-js-devel instead of couch-js, and update docs
+
 * Mon Mar 18 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-1
 - Update to new upstream version
 - Use Erlang 21 (previously: 20) for CentOS 7 and Fedora 30+
