@@ -18,9 +18,9 @@ Source1:       %{name}.service
 Source2:       usr-bin-couchdb
 Patch1:        0001-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
 
-%if 0%{?rhel}
+%if 0%{?el7}
 # Needs packages.erlang-solutions.com repo in /etc/mock/epel-7-x86_64.cfg,
-# because Erlang 17+ is not in official CentOS or EPEL repos.
+# because Erlang 17+ is not in official CentOS 7 or EPEL 7 repos.
 BuildRequires: esl-erlang = 21.3
 %else
 BuildRequires: erlang >= 21, erlang < 22
