@@ -3,12 +3,15 @@
 # Inspired from
 # http://copr-dist-git.fedorainfracloud.org/cgit/gorbyo/epel7-couchdb/couchdb.git/tree/couchdb.spec?h=epel7&id=6d5a4ac1e3f04981af41bbf6f49022754a83d416
 
+# Do not include debuginfo symlinks from /usr/lib/.build-id because they
+# conflict with other erlang packages:
+%define _build_id_links none
 # Needed to avoid build error: No build ID note found in [...].o
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
 Version:       2.3.1
-Release:       2%{?dist}
+Release:       3%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -107,6 +110,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Oct 7 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-3
+- Do not include debuginfo symlinks from /usr/lib/.build-id
+
 * Tue Oct 1 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-2
 - Use couch-js-devel instead of couch-js, and update docs
 
