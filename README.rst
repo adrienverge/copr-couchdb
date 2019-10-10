@@ -80,7 +80,7 @@ The following examples are for CentOS 7. Please adapt if needed.
     cp couchdb.service *.patch usr-bin-couchdb ~/rpmbuild/SOURCES
     rpmbuild -bs couchdb.spec
     mock -r epel-7-x86_64 --install /tmp/couch-js-1.8.5-21.*.x86_64.rpm /tmp/couch-js-devel-1.8.5-21.*.x86_64.rpm
-    mock -r epel-7-x86_64 --no-clean --rebuild ~/rpmbuild/SRPMS/couchdb-2.3.1-3.*.src.rpm
+    mock -r epel-7-x86_64 --no-clean --rebuild ~/rpmbuild/SRPMS/couchdb-2.3.1-4.*.src.rpm
 
 Note for CentOS 7
 -----------------

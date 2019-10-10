@@ -11,7 +11,7 @@
 
 Name:          couchdb
 Version:       2.3.1
-Release:       3%{?dist}
+Release:       4%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -26,7 +26,13 @@ Patch1:        0001-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
 # because Erlang 17+ is not in official CentOS 7 or EPEL 7 repos.
 BuildRequires: esl-erlang = 21.3
 %else
+%if 0%{?el8}
+# Needs packages.erlang-solutions.com repo in /etc/mock/epel-8-x86_64.cfg,
+# because Erlang 22- is not in official CentOS 8 or EPEL 8 repos.
+BuildRequires: esl-erlang = 21.3.8.8
+%else
 BuildRequires: erlang >= 21, erlang < 22
+%endif
 %endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
@@ -110,6 +116,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Thu Oct 10 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-4
+- Support CentOS 8
+
 * Mon Oct 7 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-3
 - Do not include debuginfo symlinks from /usr/lib/.build-id
 
