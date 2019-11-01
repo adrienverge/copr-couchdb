@@ -1,7 +1,7 @@
 From 70221f457752266278945ca1f71c53a7f8a037b3 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Adrien=20Verg=C3=A9?= <adrienverge@gmail.com>
 Date: Fri, 9 Sep 2016 11:42:02 +0200
-Subject: [PATCH] Read config from env COUCHDB_VM_ARGS and COUCHDB_INI_FILES
+Subject: [PATCH] Allow override of `-couch_ini` parameter
 
 ---
  rel/overlay/bin/couchdb | 6 +++++-
@@ -15,12 +15,12 @@ index f64bd44..6a70ac1 100755
  export COUCHDB_QUERY_SERVER_COFFEESCRIPT="{{prefix}}/bin/couchjs {{prefix}}/share/server/main-coffee.js"
  
  ARGS_FILE="${COUCHDB_ARGS_FILE:-$ROOTDIR/etc/vm.args}"
-+[ -z ${COUCHDB_INI_FILES+x} ] && COUCHDB_INI_FILES=
++INI_FILES=${COUCHDB_INI_FILES:-}
  SYSCONFIG_FILE="${COUCHDB_SYSCONFIG_FILE:-$ROOTDIR/releases/$APP_VSN/sys.config}"
  
  exec "$BINDIR/erlexec" -boot "$ROOTDIR/releases/$APP_VSN/couchdb" \
       -args_file "${ARGS_FILE}" \
-+     -couch_ini ${COUCHDB_INI_FILES} \
++     -couch_ini ${INI_FILES} \
       -config "${SYSCONFIG_FILE}" "$@"
  
 -- 
