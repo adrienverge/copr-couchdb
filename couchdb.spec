@@ -11,7 +11,7 @@
 
 Name:          couchdb
 Version:       2.3.1
-Release:       4%{?dist}
+Release:       5%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -31,7 +31,13 @@ BuildRequires: esl-erlang = 21.3
 # because Erlang 22- is not in official CentOS 8 or EPEL 8 repos.
 BuildRequires: esl-erlang = 21.3.8.8
 %else
+%if 0%{?fedora} >= 31
+# Needs adrienverge/couchdb copr repo in /etc/mock/fedora-31-x86_64.cfg,
+# because Erlang 22- is not in official Fedora 31 repos.
+BuildRequires: erlang = 21.3.8.7
+%else
 BuildRequires: erlang >= 21, erlang < 22
+%endif
 %endif
 %endif
 BuildRequires: gcc
@@ -116,6 +122,10 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Fri Nov 01 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-5
+- Update patch for -couch_ini since pull request
+- Support Fedora 31
+
 * Thu Oct 10 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-4
 - Support CentOS 8
 
