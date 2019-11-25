@@ -11,7 +11,7 @@
 
 Name:          couchdb
 Version:       2.3.1
-Release:       5%{?dist}
+Release:       6%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -122,6 +122,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Nov 25 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-6
+- Properly wait termination on systemd 'systemctl stop couchdb'
+
 * Fri Nov 01 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-5
 - Update patch for -couch_ini since pull request
 - Support Fedora 31
