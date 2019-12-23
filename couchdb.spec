@@ -11,7 +11,7 @@
 
 Name:          couchdb
 Version:       2.3.1
-Release:       6%{?dist}
+Release:       7%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -122,6 +122,10 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Dec 23 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-7
+- Improve logging when Systemd wait for CouchDB stop
+- Update patch for -couch_ini since pull request
+
 * Mon Nov 25 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-6
 - Properly wait termination on systemd 'systemctl stop couchdb'
 
