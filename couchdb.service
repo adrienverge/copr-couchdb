@@ -10,7 +10,7 @@ User=couchdb
 Group=couchdb
 LimitNOFILE=100000
 KillMode=process
-ExecStopPost=/bin/bash -c 'until /opt/couchdb/erts-*/bin/epmd -names | (! grep "^name couchdb at"); do sleep 1; done'
+ExecStopPost=/bin/bash -c 'until /opt/couchdb/erts-*/bin/epmd -names | (! (grep -q "^name couchdb at" && echo "CouchDB process still running...")); do sleep 1; done'
 Restart=on-failure
 
 [Install]
