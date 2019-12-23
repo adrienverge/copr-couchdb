@@ -15,12 +15,12 @@ index f64bd44..6a70ac1 100755
  export COUCHDB_QUERY_SERVER_COFFEESCRIPT="{{prefix}}/bin/couchjs {{prefix}}/share/server/main-coffee.js"
  
  ARGS_FILE="${COUCHDB_ARGS_FILE:-$ROOTDIR/etc/vm.args}"
-+INI_FILES=${COUCHDB_INI_FILES:-}
++[ -n "${COUCHDB_INI_FILES:-}" ] && INI_ARGS="-couch_ini $COUCHDB_INI_FILES"
  SYSCONFIG_FILE="${COUCHDB_SYSCONFIG_FILE:-$ROOTDIR/releases/$APP_VSN/sys.config}"
  
  exec "$BINDIR/erlexec" -boot "$ROOTDIR/releases/$APP_VSN/couchdb" \
       -args_file "${ARGS_FILE}" \
-+     -couch_ini ${INI_FILES} \
++     ${INI_ARGS:-} \
       -config "${SYSCONFIG_FILE}" "$@"
  
 -- 
