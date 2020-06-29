@@ -11,7 +11,7 @@
 
 Name:          couchdb
 Version:       2.3.1
-Release:       7%{?dist}
+Release:       8%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -29,7 +29,7 @@ BuildRequires: esl-erlang = 21.3
 %if 0%{?el8}
 # Needs packages.erlang-solutions.com repo in /etc/mock/epel-8-x86_64.cfg,
 # because Erlang 22- is not in official CentOS 8 or EPEL 8 repos.
-BuildRequires: esl-erlang = 21.3.8.8
+BuildRequires: esl-erlang = 21.3.8.16
 %else
 %if 0%{?fedora} >= 31
 # Needs adrienverge/couchdb copr repo in /etc/mock/fedora-31-x86_64.cfg,
@@ -122,6 +122,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Jun 29 2020 Adrien Vergé <adrienverge@gmail.com> 2.3.1-8
+- Rebuild for CentOS 8
+
 * Mon Dec 23 2019 Adrien Vergé <adrienverge@gmail.com> 2.3.1-7
 - Improve logging when Systemd wait for CouchDB stop
 - Update patch for -couch_ini since pull request
