@@ -1,7 +1,4 @@
-# Copyright 2016 Adrien Vergé
-#
-# Inspired from
-# http://copr-dist-git.fedorainfracloud.org/cgit/gorbyo/epel7-couchdb/couchdb.git/tree/couchdb.spec?h=epel7&id=6d5a4ac1e3f04981af41bbf6f49022754a83d416
+# Copyright 2020 Adrien Vergé
 
 # Do not include debuginfo symlinks from /usr/lib/.build-id because they
 # conflict with other erlang packages:
@@ -10,8 +7,8 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       2.3.1
-Release:       8%{?dist}
+Version:       3.1.0
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -19,33 +16,20 @@ URL:           http://couchdb.apache.org/
 Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/%{version}/apache-couchdb-%{version}.tar.gz
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
-Patch1:        0001-Read-config-from-env-COUCHDB_VM_ARGS-and-COUCHDB_INI.patch
 
-%if 0%{?el7}
-# Needs packages.erlang-solutions.com repo in /etc/mock/epel-7-x86_64.cfg,
-# because Erlang 17+ is not in official CentOS 7 or EPEL 7 repos.
-BuildRequires: esl-erlang = 21.3
-%else
-%if 0%{?el8}
-# Needs packages.erlang-solutions.com repo in /etc/mock/epel-8-x86_64.cfg,
-# because Erlang 22- is not in official CentOS 8 or EPEL 8 repos.
-BuildRequires: esl-erlang = 21.3.8.16
-%else
-%if 0%{?fedora} >= 31
-# Needs adrienverge/couchdb copr repo in /etc/mock/fedora-31-x86_64.cfg,
-# because Erlang 22- is not in official Fedora 31 repos.
+%if 0%{?fedora} >= 33
+# Erlang 22 or below is not available anymore on Fedora 33, so use the compiled
+# version from https://copr.fedorainfracloud.org/coprs/adrienverge/couchdb/
 BuildRequires: erlang = 21.3.8.7
 %else
-BuildRequires: erlang >= 21, erlang < 22
-%endif
-%endif
+BuildRequires: erlang >= 19, erlang < 23
 %endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
-BuildRequires: couch-js-devel
 BuildRequires: libicu-devel
+BuildRequires: mozjs60-devel
 
-Requires: couch-js
+Requires: mozjs60
 Requires(pre): shadow-utils
 Requires(post): systemd
 Requires(preun): systemd
@@ -62,11 +46,10 @@ JavaScript acting as the default view definition language.
 
 %prep
 %setup -q -n apache-couchdb-%{version}
-%patch1 -p1
 
 
 %build
-./configure --skip-deps --disable-docs
+./configure --skip-deps --disable-docs --spidermonkey-version 60
 
 make release %{?_smp_mflags}
 
@@ -76,6 +59,7 @@ sed -i 's|\./data\b|%{_sharedstatedir}/%{name}|g' rel/couchdb/etc/default.ini
 
 %install
 mkdir -p %{buildroot}/opt
+rm rel/couchdb/bin/couchdb.cmd
 cp -r rel/couchdb %{buildroot}/opt
 
 install -D -m 755 %{SOURCE2} %{buildroot}%{_bindir}/%{name}
@@ -122,6 +106,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Thu Jul 02 2020 Adrien Vergé <adrienverge@gmail.com> 3.1.0-1
+- Upgrade to CouchDB 3
+
 * Mon Jun 29 2020 Adrien Vergé <adrienverge@gmail.com> 2.3.1-8
 - Rebuild for CentOS 8
 

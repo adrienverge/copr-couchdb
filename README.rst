@@ -1,8 +1,8 @@
-CouchDB 2
-=========
+CouchDB 2 and 3
+===============
 
-This repository provides unofficial packages of CouchDB 2.x for CentOS 7+ and
-Fedora 24+. They are available at:
+This repository provides unofficial packages of CouchDB 2 and CouchDB 3 for
+CentOS 7+ and Fedora 24+. They are available at:
 
 https://copr.fedorainfracloud.org/coprs/adrienverge/couchdb/
 
@@ -44,7 +44,7 @@ Quick and dirty, on your own system:
  cp couchdb.service *.patch usr-bin-couchdb ~/rpmbuild/SOURCES \
    && rpmbuild -ba couchdb.spec \
    && sudo dnf remove -y couchdb \
-   && sudo dnf install -y ~/rpmbuild/RPMS/x86_64/couchdb-2.*.x86_64.rpm \
+   && sudo dnf install -y ~/rpmbuild/RPMS/x86_64/couchdb-3.*.x86_64.rpm \
    && sudo systemctl restart couchdb \
    && journalctl -fu couchdb
 
@@ -53,40 +53,17 @@ Rebuild the package cleanly
 
 The following examples are for CentOS 8. Please adapt if needed.
 
-1. We need to compile and ship our own ``js`` package, because of reasons
-   described at https://github.com/apache/couchdb-pkg/tree/7768c00/js.
+.. code:: shell
 
-   So first, you need to create ``couch-js`` and ``couch-js-devel``:
+ cp couchdb.service *.patch usr-bin-couchdb ~/rpmbuild/SOURCES
+ rpmbuild -bs couchdb.spec
+ mock -r epel-8-x86_64 --no-clean --rebuild ~/rpmbuild/SRPMS/couchdb-3.*.src.rpm
 
-   .. code:: shell
+Note for CentOS 7
+-----------------
 
-    git clone git@github.com:apache/couchdb-pkg.git /tmp/couchdb-pkg
-    cd /tmp/couchdb-pkg
-    cp js/src/js185-1.0.0.tar.gz js/rpm/SOURCES/* ~/rpmbuild/SOURCES/
-    rpmbuild -bs js/rpm/SPECS/js.spec
-    mock -r epel-8-x86_64 --rebuild ~/rpmbuild/SRPMS/couch-js-1.8.5-21.*.src.rpm
-
-   ... and save the RPM somewhere for later:
-
-   .. code:: shell
-
-    cp /var/lib/mock/epel-8-x86_64/result/couch-js-*.rpm /tmp/
-
-2. Then build ``couchdb``, after install ``couch-js`` and ``couch-js-devel`` in
-   the mock environment:
-
-   .. code:: shell
-
-    cp couchdb.service *.patch usr-bin-couchdb ~/rpmbuild/SOURCES
-    rpmbuild -bs couchdb.spec
-    mock -r epel-8-x86_64 --install /tmp/couch-js-1.8.5-21.*.x86_64.rpm /tmp/couch-js-devel-1.8.5-21.*.x86_64.rpm
-    mock -r epel-8-x86_64 --no-clean --rebuild ~/rpmbuild/SRPMS/couchdb-2.3.1-8.*.src.rpm
-
-Note for CentOS 7+
-------------------
-
-For CentOS (where Erlang 17+ is not packaged), you need to add this to
-``/etc/mock/epel-8-x86_64.cfg``:
+For CentOS 7 (where Erlang 17+ is not packaged), you need to add this to
+``/etc/mock/epel-7-x86_64.cfg``:
 
 .. code::
 
