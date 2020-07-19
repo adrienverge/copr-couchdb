@@ -55,9 +55,9 @@ The following examples are for CentOS 8. Please adapt if needed.
 
 .. code:: shell
 
- cp couchdb.service *.patch usr-bin-couchdb ~/rpmbuild/SOURCES
+ cp couchdb.service usr-bin-couchdb ~/rpmbuild/SOURCES
  rpmbuild -bs couchdb.spec
- mock -r epel-8-x86_64 --no-clean --rebuild ~/rpmbuild/SRPMS/couchdb-3.*.src.rpm
+ mock -r epel-8-x86_64 --rebuild ~/rpmbuild/SRPMS/couchdb-3.*.src.rpm
 
 Note for CentOS 7
 -----------------
