@@ -8,7 +8,7 @@
 
 Name:          couchdb
 Version:       3.1.0
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -22,14 +22,28 @@ Source2:       usr-bin-couchdb
 # version from https://copr.fedorainfracloud.org/coprs/adrienverge/couchdb/
 BuildRequires: erlang = 21.3.8.7
 %else
+%if 0%{?el7}
+# Needs packages.erlang-solutions.com repo in /etc/mock/epel-7-x86_64.cfg,
+# because Erlang 17+ is not in official CentOS 7 or EPEL 7 repos.
+BuildRequires: esl-erlang = 21.3
+%else
 BuildRequires: erlang >= 19, erlang < 23
+%endif
 %endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: libicu-devel
+%if 0%{?el7}
+BuildRequires: couch-js-devel
+%else
 BuildRequires: mozjs60-devel
+%endif
 
+%if 0%{?el7}
+Requires: couch-js
+%else
 Requires: mozjs60
+%endif
 Requires(pre): shadow-utils
 Requires(post): systemd
 Requires(preun): systemd
@@ -49,7 +63,11 @@ JavaScript acting as the default view definition language.
 
 
 %build
+%if 0%{?el7}
+./configure --skip-deps --disable-docs
+%else
 ./configure --skip-deps --disable-docs --spidermonkey-version 60
+%endif
 
 make release %{?_smp_mflags}
 
@@ -106,6 +124,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Sun Jul 19 2020 Adrien Vergé <adrienverge@gmail.com> 3.1.0-2
+- Backport CouchDB 3 to CentOS 7
+
 * Thu Jul 02 2020 Adrien Vergé <adrienverge@gmail.com> 3.1.0-1
 - Upgrade to CouchDB 3
 
