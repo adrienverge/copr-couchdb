@@ -7,8 +7,8 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       3.1.0
-Release:       2%{?dist}
+Version:       3.1.1
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -124,6 +124,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Sep 21 2020 Adrien Vergé <adrienverge@gmail.com> 3.1.1-1
+- Update to new upstream version
+
 * Sun Jul 19 2020 Adrien Vergé <adrienverge@gmail.com> 3.1.0-2
 - Backport CouchDB 3 to CentOS 7
 
