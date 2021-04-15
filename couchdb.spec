@@ -33,16 +33,24 @@ BuildRequires: erlang >= 19, erlang < 23
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: libicu-devel
+%if 0%{?rhel}
 %if 0%{?el7}
 BuildRequires: couch-js-devel
 %else
 BuildRequires: mozjs60-devel
 %endif
+%else
+BuildRequires: mozjs68-devel
+%endif
 
+%if 0%{?rhel}
 %if 0%{?el7}
 Requires: couch-js
 %else
 Requires: mozjs60
+%endif
+%else
+Requires: mozjs68
 %endif
 Requires(pre): shadow-utils
 Requires(post): systemd
@@ -63,10 +71,14 @@ JavaScript acting as the default view definition language.
 
 
 %build
+%if 0%{?rhel}
 %if 0%{?el7}
 ./configure --skip-deps --disable-docs
 %else
 ./configure --skip-deps --disable-docs --spidermonkey-version 60
+%endif
+%else
+./configure --skip-deps --disable-docs --spidermonkey-version 68
 %endif
 
 make release %{?_smp_mflags}
