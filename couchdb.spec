@@ -7,7 +7,7 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       3.1.1
+Version:       3.1.2
 Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
@@ -136,6 +136,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue Oct 5 2021 Adrien Vergé <adrienverge@gmail.com> 3.1.2-1
+- Update to new upstream version
+
 * Mon Sep 21 2020 Adrien Vergé <adrienverge@gmail.com> 3.1.1-1
 - Update to new upstream version
 
