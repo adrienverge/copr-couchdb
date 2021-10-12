@@ -58,18 +58,3 @@ The following examples are for CentOS 8. Please adapt if needed.
  cp couchdb.service usr-bin-couchdb ~/rpmbuild/SOURCES
  rpmbuild -bs couchdb.spec
  mock -r epel-8-x86_64 --rebuild ~/rpmbuild/SRPMS/couchdb-3.*.src.rpm
-
-Note for CentOS 7
------------------
-
-For CentOS 7 (where Erlang 17+ is not packaged), you need to add this to
-``/etc/mock/epel-7-x86_64.cfg``:
-
-.. code::
-
- [erlang-solutions]
- name=Centos $releasever - $basearch - Erlang Solutions
- baseurl=http://packages.erlang-solutions.com/rpm/centos/$releasever/$basearch
- gpgcheck=0
- gpgkey=http://packages.erlang-solutions.com/debian/erlang_solutions.asc
- enabled=1

@@ -7,7 +7,7 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       3.1.2
+Version:       3.2.0
 Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
@@ -17,38 +17,18 @@ Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
 
-%if 0%{?fedora} >= 33
-# Erlang 22 or below is not available anymore on Fedora 33, so use the compiled
-# version from https://copr.fedorainfracloud.org/coprs/adrienverge/couchdb/
-BuildRequires: erlang = 21.3.8.7
-%else
-%if 0%{?el7}
-# Needs packages.erlang-solutions.com repo in /etc/mock/epel-7-x86_64.cfg,
-# because Erlang 17+ is not in official CentOS 7 or EPEL 7 repos.
-BuildRequires: esl-erlang = 21.3
-%else
-BuildRequires: erlang >= 19, erlang < 23
-%endif
-%endif
+BuildRequires: erlang >= 22, erlang < 25
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: libicu-devel
 %if 0%{?rhel}
-%if 0%{?el7}
-BuildRequires: couch-js-devel
-%else
 BuildRequires: mozjs60-devel
-%endif
 %else
 BuildRequires: mozjs68-devel
 %endif
 
 %if 0%{?rhel}
-%if 0%{?el7}
-Requires: couch-js
-%else
 Requires: mozjs60
-%endif
 %else
 Requires: mozjs68
 %endif
@@ -72,11 +52,7 @@ JavaScript acting as the default view definition language.
 
 %build
 %if 0%{?rhel}
-%if 0%{?el7}
-./configure --skip-deps --disable-docs
-%else
 ./configure --skip-deps --disable-docs --spidermonkey-version 60
-%endif
 %else
 ./configure --skip-deps --disable-docs --spidermonkey-version 68
 %endif
@@ -136,6 +112,11 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue Oct 12 2021 Baptiste Ravier <baptiste.ravier@gmail.com> 3.2.0-1
+- Update to new upstream version
+- Use Erlang >= 22 and < 25 for CentOS 8 and Fedora 34+
+- Drop CentOS 7 support
+
 * Tue Oct 5 2021 Adrien Vergé <adrienverge@gmail.com> 3.1.2-1
 - Update to new upstream version
 
