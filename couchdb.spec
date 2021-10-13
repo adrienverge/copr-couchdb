@@ -8,7 +8,7 @@
 
 Name:          couchdb
 Version:       3.2.0
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -24,13 +24,13 @@ BuildRequires: libicu-devel
 %if 0%{?rhel}
 BuildRequires: mozjs60-devel
 %else
-BuildRequires: mozjs68-devel
+BuildRequires: mozjs78-devel
 %endif
 
 %if 0%{?rhel}
 Requires: mozjs60
 %else
-Requires: mozjs68
+Requires: mozjs78
 %endif
 Requires(pre): shadow-utils
 Requires(post): systemd
@@ -54,7 +54,7 @@ JavaScript acting as the default view definition language.
 %if 0%{?rhel}
 ./configure --skip-deps --disable-docs --spidermonkey-version 60
 %else
-./configure --skip-deps --disable-docs --spidermonkey-version 68
+./configure --skip-deps --disable-docs --spidermonkey-version 78
 %endif
 
 make release %{?_smp_mflags}
@@ -112,6 +112,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue Oct 13 2021 Baptiste Ravier <baptiste.ravier@gmail.com> 3.2.0-2
+- Use mozjs78 (previously: 68) for Fedora 34+
+
 * Tue Oct 12 2021 Baptiste Ravier <baptiste.ravier@gmail.com> 3.2.0-1
 - Update to new upstream version
 - Use Erlang >= 22 and < 25 for CentOS 8 and Fedora 34+
