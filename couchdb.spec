@@ -7,8 +7,8 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       3.2.1
-Release:       2%{?dist}
+Version:       3.2.2
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -17,11 +17,7 @@ Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
 
-%if 0%{?el8}
 BuildRequires: erlang = 24.1.7
-%else
-BuildRequires: erlang >= 23, erlang < 25
-%endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: libicu-devel
@@ -116,6 +112,10 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue Apr 19 2022 Hoël Iris <hoel.iris@gmail.com> 3.2.2-1
+- Update to new upstream version
+- Use Erlang = 24.1.7 (previously: >= 23, < 25) for Fedora 35+
+
 * Thu Nov 25 2021 Baptiste Ravier <baptiste.ravier@gmail.com> 3.2.1-2
 - Use Erlang >= 23 (previously: >= 22) for CentOS 8 and Fedora 34+
 
