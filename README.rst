@@ -58,3 +58,21 @@ The following examples are for Rocky Linux 9. Please adapt if needed.
  cp couchdb.service usr-bin-couchdb ~/rpmbuild/SOURCES
  rpmbuild -bs couchdb.spec
  mock -r rocky+epel-9-x86_64 --rebuild ~/rpmbuild/SRPMS/couchdb-3.*.src.rpm
+
+In case the ``mock`` command needs to find a ``BuildRequires`` package from a
+special repository, it can be provided by addind this to the mock configuration
+file (e.g. ``/etc/mock/rocky+epel-9-x86_64.cfg`` for Rocky Linux 9):
+
+.. code:: python
+
+ config_opts['dnf.conf'] += """
+ [adrienverge-couchdb]
+ name=Copr repo for couchdb owned by adrienverge
+ baseurl=https://copr-be.cloud.fedoraproject.org/results/adrienverge/couchdb/fedora-rawhide-$basearch/
+ type=rpm-md
+ gpgcheck=1
+ gpgkey=https://copr-be.cloud.fedoraproject.org/results/adrienverge/couchdb/pubkey.gpg
+ repo_gpgcheck=0
+ enabled=1
+ enabled_metadata=1
+ """
