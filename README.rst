@@ -51,10 +51,10 @@ Quick and dirty, on your own system:
 Rebuild the package cleanly
 ---------------------------
 
-The following examples are for CentOS 8. Please adapt if needed.
+The following examples are for Rocky Linux 9. Please adapt if needed.
 
 .. code:: shell
 
  cp couchdb.service usr-bin-couchdb ~/rpmbuild/SOURCES
  rpmbuild -bs couchdb.spec
- mock -r epel-8-x86_64 --rebuild ~/rpmbuild/SRPMS/couchdb-3.*.src.rpm
+ mock -r rocky+epel-9-x86_64 --rebuild ~/rpmbuild/SRPMS/couchdb-3.*.src.rpm
