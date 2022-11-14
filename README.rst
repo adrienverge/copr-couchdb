@@ -76,3 +76,12 @@ file (e.g. ``/etc/mock/rocky+epel-9-x86_64.cfg`` for Rocky Linux 9):
  enabled=1
  enabled_metadata=1
  """
+
+In case the ``mock`` command needs to find a ``BuildRequires`` package from a
+local file, it can be pre-installed using ``install`` first, then
+``--no-clean``. For instance:
+
+.. code:: shell
+
+ mock -r fedora-37-x86_64 install erlang-24.3.4.5-2.fc37.x86_64.rpm
+ mock -r fedora-37-x86_64 --no-clean rebuild ~/rpmbuild/SRPMS/….src.rpm
