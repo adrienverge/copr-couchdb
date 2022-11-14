@@ -8,7 +8,7 @@
 
 Name:          couchdb
 Version:       3.2.2
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -17,10 +17,11 @@ Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
 
-BuildRequires: erlang = 24.1.7
+BuildRequires: erlang = 24.3.4.5
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: libicu-devel
+BuildRequires: systemd
 %if 0%{?rhel}
 BuildRequires: mozjs60-devel
 %else
@@ -80,6 +81,10 @@ mkdir -p %{buildroot}%{_sharedstatedir}/%{name}
 
 rmdir %{buildroot}/opt/couchdb/var/log %{buildroot}/opt/couchdb/var
 
+# Added by Adrien, because /usr/lib/rpm/check-rpaths complained about openssl.
+# Other option: try %global __brp_check_rpaths %{nil}
+export QA_RPATHS=$(( 0x0001|0x0002 ))
+
 
 %pre
 getent group %{name} >/dev/null || groupadd -r %{name}
@@ -112,6 +117,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Mon Nov 14 2022 Adrien Vergé <adrienverge@gmail.com> 3.2.2-2
+- Use Erlang 24.3.4.5 and shut down check-rpaths to compile for Fedora 37
+
 * Tue Apr 19 2022 Hoël Iris <hoel.iris@gmail.com> 3.2.2-1
 - Update to new upstream version
 - Use Erlang = 24.1.7 (previously: >= 23, < 25) for Fedora 35+
