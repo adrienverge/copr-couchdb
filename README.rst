@@ -68,7 +68,7 @@ file (e.g. ``/etc/mock/rocky+epel-9-x86_64.cfg`` for Rocky Linux 9):
  config_opts['dnf.conf'] += """
  [adrienverge-couchdb]
  name=Copr repo for couchdb owned by adrienverge
- baseurl=https://copr-be.cloud.fedoraproject.org/results/adrienverge/couchdb/fedora-rawhide-$basearch/
+ baseurl=https://copr-be.cloud.fedoraproject.org/results/adrienverge/couchdb/epel-$releasever-$basearch/
  type=rpm-md
  gpgcheck=1
  gpgkey=https://copr-be.cloud.fedoraproject.org/results/adrienverge/couchdb/pubkey.gpg
