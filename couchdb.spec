@@ -7,8 +7,8 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       3.2.2
-Release:       3%{?dist}
+Version:       3.3.0
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -17,7 +17,11 @@ Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
 
+%if 0%{?rhel} && 0%{?rhel} < 9
+BuildRequires: erlang = 24.1.7
+%else
 BuildRequires: erlang = 24.3.4.5
+%endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: libicu-devel
@@ -117,6 +121,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Thu Jan 05 2023 Baptiste Ravier <baptiste.ravier@gmail.com> 3.3.0-1
+- Update to new upstream version
+
 * Tue Nov 15 2022 Adrien Vergé <adrienverge@gmail.com> 3.2.2-3
 - Use custom re-packaged mozjs78 for EPEL 9
 
