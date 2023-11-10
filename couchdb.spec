@@ -8,7 +8,7 @@
 
 Name:          couchdb
 Version:       3.3.2
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -26,17 +26,9 @@ BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: libicu-devel
 BuildRequires: systemd
-%if 0%{?rhel} && 0%{?rhel} < 9
-BuildRequires: mozjs60-devel
-%else
-BuildRequires: mozjs78-devel
-%endif
+BuildRequires: mozjs91-devel
 
-%if 0%{?rhel} && 0%{?rhel} < 9
-Requires: mozjs60
-%else
-Requires: mozjs78
-%endif
+Requires: mozjs91
 Requires(pre): shadow-utils
 Requires(post): systemd
 Requires(preun): systemd
@@ -56,11 +48,7 @@ JavaScript acting as the default view definition language.
 
 
 %build
-%if 0%{?rhel} && 0%{?rhel} < 9
-./configure --skip-deps --disable-docs --spidermonkey-version 60
-%else
-./configure --skip-deps --disable-docs --spidermonkey-version 78
-%endif
+./configure --skip-deps --disable-docs --spidermonkey-version 91
 
 make release %{?_smp_mflags}
 
@@ -121,6 +109,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Fri Nov 10 2023 Baptiste Ravier <baptiste.ravier@gmail.com> 3.3.2-2
+- Use custom re-packaged mozjs91 (previously: 78) for EPEL 8+ and Fedora 38+
+
 * Thu Apr 27 2023 Baptiste Ravier <baptiste.ravier@gmail.com> 3.3.2-1
 - Update to new upstream version
 
