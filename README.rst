@@ -53,6 +53,10 @@ Rebuild the package cleanly
 
 The following examples are for Rocky Linux 9. Please adapt if needed.
 
+First, download official CouchDB source code into ``~/rpmbuild/SOURCES``. The
+file name must match the one of ``Source0`` in ``couhdb.spec``, e.g.
+``apache-couchdb-3.3.2.tar.gz``.
+
 .. code:: shell
 
  cp couchdb.service usr-bin-couchdb ~/rpmbuild/SOURCES
