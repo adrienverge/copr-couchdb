@@ -1,28 +1,18 @@
-CouchDB 2 and 3
-===============
+RPM packages for CouchDB 3
+==========================
 
-This repository provides unofficial packages of CouchDB 2 and CouchDB 3 for
-CentOS 7+ and Fedora 24+. They are available at:
+This repository provides unofficial packages of CouchDB 3 for Fedora 24+ and
+CentOS 7+ / Rocky Linux 9+. They are available at:
 
 https://copr.fedorainfracloud.org/coprs/adrienverge/couchdb/
 
 Use the repo to install CouchDB
 -------------------------------
 
-Fedora:
-
 .. code:: shell
 
  sudo dnf copr enable adrienverge/couchdb
  sudo dnf install couchdb
-
-CentOS:
-
-.. code:: shell
-
- sudo yum install yum-plugin-copr
- sudo yum copr enable adrienverge/couchdb
- sudo yum install couchdb
 
 Running
 -------
@@ -87,5 +77,5 @@ local file, it can be pre-installed using ``install`` first, then
 
 .. code:: shell
 
- mock -r fedora-37-x86_64 install erlang-24.3.4.5-2.fc37.x86_64.rpm
- mock -r fedora-37-x86_64 --no-clean rebuild ~/rpmbuild/SRPMS/….src.rpm
+ mock -r fedora-39-x86_64 install erlang-24.3.4.5-2.fc39.x86_64.rpm
+ mock -r fedora-39-x86_64 --no-clean rebuild ~/rpmbuild/SRPMS/….src.rpm
