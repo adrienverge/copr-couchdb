@@ -7,8 +7,8 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       3.3.2
-Release:       2%{?dist}
+Version:       3.3.3
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -109,6 +109,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue Dec 05 2023 Adrien Vergé <adrienverge@gmail.com> 3.3.3-3
+- Update to new upstream version
+
 * Fri Nov 10 2023 Baptiste Ravier <baptiste.ravier@gmail.com> 3.3.2-2
 - Use custom re-packaged mozjs91 (previously: 78) for EPEL 8+ and Fedora 38+
 
