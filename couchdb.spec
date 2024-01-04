@@ -8,7 +8,7 @@
 
 Name:          couchdb
 Version:       3.3.3
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -20,7 +20,7 @@ Source2:       usr-bin-couchdb
 %if 0%{?rhel} && 0%{?rhel} < 9
 BuildRequires: erlang = 24.1.7
 %else
-BuildRequires: erlang = 24.3.4.5
+BuildRequires: erlang = 24.3.4.15
 %endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
@@ -109,6 +109,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Thu Jan 04 2024 Adrien Vergé <adrienverge@gmail.com> 3.3.3-2
+- Use Erlang 24.3.4.15 (previously 24.3.4.5) to fix a memory leak
+
 * Tue Dec 05 2023 Adrien Vergé <adrienverge@gmail.com> 3.3.3-3
 - Update to new upstream version
 
