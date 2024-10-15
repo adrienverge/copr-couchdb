@@ -7,8 +7,8 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       3.3.3
-Release:       2%{?dist}
+Version:       3.4.1
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
@@ -17,18 +17,18 @@ Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/
 Source1:       %{name}.service
 Source2:       usr-bin-couchdb
 
-%if 0%{?rhel} && 0%{?rhel} < 9
-BuildRequires: erlang = 24.1.7
-%else
-BuildRequires: erlang = 24.3.4.15
+BuildRequires: erlang >= 26
+%if 0%{?fedora} && 0%{?fedora} >= 40
+BuildRequires: erlang-doc
+BuildRequires: erlang-doc-fix-missing-chunks
 %endif
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: libicu-devel
 BuildRequires: systemd
-BuildRequires: mozjs91-devel
+BuildRequires: quickjs-devel
 
-Requires: mozjs91
+Requires: quickjs
 Requires(pre): shadow-utils
 Requires(post): systemd
 Requires(preun): systemd
@@ -46,9 +46,8 @@ JavaScript acting as the default view definition language.
 %prep
 %setup -q -n apache-couchdb-%{version}
 
-
 %build
-./configure --skip-deps --disable-docs --spidermonkey-version 91
+./configure --skip-deps --disable-docs --js-engine=quickjs --disable-spidermonkey
 
 make release %{?_smp_mflags}
 
@@ -102,6 +101,7 @@ getent passwd %{name} >/dev/null || \
 %config %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/local.d/README
 %config(noreplace) %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/local.ini
 %config(noreplace) %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/vm.args
+%config(noreplace) %attr(0644, %{name}, %{name}) %{_sysconfdir}/%{name}/nouveau.yaml
 
 %dir %attr(0755, %{name}, %{name}) %{_sharedstatedir}/%{name}
 
@@ -109,6 +109,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue Oct 15 2024 Adrien Vergé 3.4.1-1
+- Update to CouchDB 3.4.1 + QuickJS + Erlang 26 + other changes
+
 * Thu Jan 04 2024 Adrien Vergé <adrienverge@gmail.com> 3.3.3-2
 - Use Erlang 24.3.4.15 (previously 24.3.4.5) to fix a memory leak
 
