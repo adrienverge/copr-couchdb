@@ -3,11 +3,9 @@
 # Do not include debuginfo symlinks from /usr/lib/.build-id because they
 # conflict with other erlang packages:
 %define _build_id_links none
-# Needed to avoid build error: No build ID note found in [...].o
-%undefine _missing_build_ids_terminate_build
 
 Name:          couchdb
-Version:       3.4.1
+Version:       3.5.0
 Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
@@ -72,10 +70,6 @@ mkdir -p %{buildroot}%{_sharedstatedir}/%{name}
 
 rmdir %{buildroot}/opt/couchdb/var/log %{buildroot}/opt/couchdb/var
 
-# Added by Adrien, because /usr/lib/rpm/check-rpaths complained about openssl.
-# Other option: try %global __brp_check_rpaths %{nil}
-export QA_RPATHS=$(( 0x0001|0x0002 ))
-
 
 %pre
 getent group %{name} >/dev/null || groupadd -r %{name}
@@ -109,6 +103,9 @@ getent passwd %{name} >/dev/null || \
 
 
 %changelog
+* Tue May 06 2025 Adrien Vergé 3.5.0-1
+- Update to CouchDB 3.5.0
+
 * Tue Oct 15 2024 Adrien Vergé 3.4.1-1
 - Update to CouchDB 3.4.1 + QuickJS + Erlang 26 + other changes
 
