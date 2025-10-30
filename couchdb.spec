@@ -6,14 +6,15 @@
 
 Name:          couchdb
 Version:       3.5.0
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
 URL:           http://couchdb.apache.org/
 Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/%{version}/apache-couchdb-%{version}.tar.gz
 Source1:       %{name}.service
-Source2:       usr-bin-couchdb
+Source2:       %{name}.sysusers
+Source3:       usr-bin-couchdb
 
 BuildRequires: erlang >= 26
 %if 0%{?fedora} && 0%{?fedora} >= 40
@@ -23,8 +24,12 @@ BuildRequires: erlang-doc-fix-missing-chunks
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: libicu-devel
-BuildRequires: systemd
 BuildRequires: quickjs-devel
+BuildRequires: systemd
+%{?systemd_requires}
+BuildRequires: systemd-rpm-macros
+# Only needed for < Fedora 42:
+%{?sysusers_requires_compat}
 
 Requires: quickjs
 Requires(pre): shadow-utils
@@ -58,13 +63,14 @@ mkdir -p %{buildroot}/opt
 rm rel/couchdb/bin/couchdb.cmd
 cp -r rel/couchdb %{buildroot}/opt
 
-install -D -m 755 %{SOURCE2} %{buildroot}%{_bindir}/%{name}
+install -p -D -m 0755 %{SOURCE3} %{buildroot}%{_bindir}/%{name}
 
 # Have conf in /etc/couchdb, not /opt/couchdb/etc
 mkdir -p %{buildroot}%{_sysconfdir}
 mv %{buildroot}/opt/couchdb/etc %{buildroot}%{_sysconfdir}/%{name}
 
-install -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
+install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
+install -p -D -m 0644 %{SOURCE2} %{buildroot}%{_sysusersdir}/%{name}.conf
 
 mkdir -p %{buildroot}%{_sharedstatedir}/%{name}
 
@@ -72,9 +78,8 @@ rmdir %{buildroot}/opt/couchdb/var/log %{buildroot}/opt/couchdb/var
 
 
 %pre
-getent group %{name} >/dev/null || groupadd -r %{name}
-getent passwd %{name} >/dev/null || \
-  useradd -r -g %{name} -d %{_sharedstatedir}/%{name} -s /sbin/nologin %{name}
+# Only needed for < Fedora 42:
+%sysusers_create_compat %{SOURCE2}
 
 %post
 %systemd_post %{name}.service
@@ -100,9 +105,13 @@ getent passwd %{name} >/dev/null || \
 %dir %attr(0755, %{name}, %{name}) %{_sharedstatedir}/%{name}
 
 %{_unitdir}/%{name}.service
+%{_sysusersdir}/%{name}.conf
 
 
 %changelog
+* Thu Oct 30 2025 Adrien Vergé 3.5.0-2
+- Use systemd-sysusers for user 'couchdb' and drop group 'couchdb'
+
 * Tue May 06 2025 Adrien Vergé 3.5.0-1
 - Update to CouchDB 3.5.0
 
