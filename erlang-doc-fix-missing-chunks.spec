@@ -1,5 +1,5 @@
 Name:           erlang-doc-fix-missing-chunks
-Version:        26.2.5.15
+Version:        26.2.5.19
 Release:        1%{?dist}
 Summary:        Fix missing chunks directories
 License:        GPL-3.0-or-later
@@ -28,6 +28,13 @@ done
 %{_datarootdir}/doc/erlang-%{version}/lib
 
 %changelog
+* Fri Apr 17 2026 Adrien Vergé 26.2.5.19-1
+- Update for Fedora 43 and 45 (rawhide), which have Erlang 26.2.5.19, but not
+  Fedora 44 which is stuck on 26.2.5.18 (probably because in final freeze)
+
+* Fri Apr 17 2026 Adrien Vergé 26.2.5.18-1
+- Update for Fedora 44 (in beta), which has Erlang 26.2.5.18
+
 * Wed Oct 29 2025 Adrien Vergé 26.2.5.15-1
 - Update for Fedora 43 and 44 (rawhide), which have Erlang 26.2.5.15
 
