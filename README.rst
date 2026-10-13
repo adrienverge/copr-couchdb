@@ -77,6 +77,5 @@ local file, it can be pre-installed using ``install`` first, then
 
 .. code:: shell
 
- mock -r fedora-41-x86_64 install quickjs-….x86_64.rpm \
-                                  erlang-doc-fix-missing-chunks-….x86_64.rpm
+ mock -r fedora-41-x86_64 install quickjs-….x86_64.rpm
  mock -r fedora-41-x86_64 --no-clean rebuild ~/rpmbuild/SRPMS/….src.rpm

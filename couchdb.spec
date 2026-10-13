@@ -4,35 +4,32 @@
 # conflict with other erlang packages:
 %define _build_id_links none
 
+# Prebuilt binaries: no debuginfo, no rpath check, no shebang mangling
+%global debug_package %{nil}
+%global __brp_check_rpaths %{nil}
+%global __brp_mangle_shebangs %{nil}
+
 Name:          couchdb
-Version:       3.5.0
-Release:       2%{?dist}
+Version:       3.5.3
+Release:       1%{?dist}
 Summary:       A document database server, accessible via a RESTful JSON API
 Group:         Applications/Databases
 License:       Apache
 URL:           http://couchdb.apache.org/
-Source0:       http://apache.mirrors.ovh.net/ftp.apache.org/dist/couchdb/source/%{version}/apache-couchdb-%{version}.tar.gz
+Source0:       https://apache.jfrog.io/artifactory/couchdb-rpm/el9/x86_64/couchdb-%{version}-1.el9.x86_64.rpm
 Source1:       %{name}.service
 Source2:       %{name}.sysusers
 Source3:       usr-bin-couchdb
+# ICU 67.1 from EL9. Needed for couch_ejson_compare.so.
+Source4:       https://mirror.rabisu.com/mirrors/rockylinux/9.8/BaseOS/x86_64/os/Packages/l/libicu-67.1-10.el9_6.x86_64.rpm
 
-BuildRequires: erlang >= 26
-%if 0%{?fedora} && 0%{?fedora} >= 40
-BuildRequires: erlang-doc
-BuildRequires: erlang-doc-fix-missing-chunks
-%endif
-BuildRequires: gcc
-BuildRequires: gcc-c++
-BuildRequires: libicu-devel
-BuildRequires: quickjs-devel
+BuildRequires: cpio
 BuildRequires: systemd
 %{?systemd_requires}
 BuildRequires: systemd-rpm-macros
 # Only needed for < Fedora 42:
 %{?sysusers_requires_compat}
 
-Requires: quickjs
-Requires(pre): shadow-utils
 Requires(post): systemd
 Requires(preun): systemd
 
@@ -47,34 +44,67 @@ JavaScript acting as the default view definition language.
 
 
 %prep
-%setup -q -n apache-couchdb-%{version}
+%setup -q -c -T
+rpm2cpio %{SOURCE0} | cpio -idm --quiet
+mkdir icu
+(cd icu && rpm2cpio %{SOURCE4} | cpio -idm --quiet)
+
 
 %build
-./configure --skip-deps --disable-docs --js-engine=quickjs --disable-spidermonkey
+rm opt/couchdb/bin/couchdb.cmd
 
-make release %{?_smp_mflags}
+rm -r opt/couchdb/data opt/couchdb/var
 
-# Store databases in /var/lib/couchdb
-sed -i 's|\./data\b|%{_sharedstatedir}/%{name}|g' rel/couchdb/etc/default.ini
+# Remove SpiderMonkey's couchjs which is useless with QuickJS
+rm opt/couchdb/bin/couchjs
+rm opt/couchdb/lib/couch-%{version}/priv/couchjs
+
+# Don't package development header files (.h for C, .hrl for Erlang),
+# documentation, ERTS source files
+rm -r opt/couchdb/lib/*/include
+rm -r opt/couchdb/erts-*/doc
+rm -r opt/couchdb/erts-*/src
+rm -r opt/couchdb/erts-*/include
+rm -r opt/couchdb/share/docs
+rm -r opt/couchdb/share/server
+rm -r opt/couchdb/share/www/docs
+
+# Don't ship Nouveau, mostly to reduce package size. Nouveau requires a Java
+# runtime environment and is disabled by default in CouchDB configuration.
+# https://docs.couchdb.org/en/stable/install/nouveau.html
+rm -r opt/couchdb/nouveau
 
 
 %install
 mkdir -p %{buildroot}/opt
-rm rel/couchdb/bin/couchdb.cmd
-cp -r rel/couchdb %{buildroot}/opt
+
+cp -r opt/couchdb %{buildroot}/opt
 
 install -p -D -m 0755 %{SOURCE3} %{buildroot}%{_bindir}/%{name}
+
+install -d %{buildroot}/opt/couchdb/libicu67
+# These are the only needed Shared Object files for couch_ejson_compare.so.
+for l in uc i18n data; do
+    install -p icu/usr/lib64/libicu$l.so.67.1 %{buildroot}/opt/couchdb/libicu67/
+    ln -s libicu$l.so.67.1 %{buildroot}/opt/couchdb/libicu67/libicu$l.so.67
+done
 
 # Have conf in /etc/couchdb, not /opt/couchdb/etc
 mkdir -p %{buildroot}%{_sysconfdir}
 mv %{buildroot}/opt/couchdb/etc %{buildroot}%{_sysconfdir}/%{name}
 
+# Store databases in /var/lib/couchdb
+sed -i 's|\./data\b|%{_sharedstatedir}/%{name}|g' \
+    %{buildroot}%{_sysconfdir}/%{name}/default.ini
+
+# Use QuickJS as JavaScript engine
+sed -i 's|^;js_engine = spidermonkey|js_engine = quickjs|' \
+    %{buildroot}%{_sysconfdir}/%{name}/default.ini
+
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
 install -p -D -m 0644 %{SOURCE2} %{buildroot}%{_sysusersdir}/%{name}.conf
 
 mkdir -p %{buildroot}%{_sharedstatedir}/%{name}
-
-rmdir %{buildroot}/opt/couchdb/var/log %{buildroot}/opt/couchdb/var
 
 
 %pre
@@ -109,6 +139,11 @@ rmdir %{buildroot}/opt/couchdb/var/log %{buildroot}/opt/couchdb/var
 
 
 %changelog
+* Tue Oct 13 2026 Baptiste Ravier 3.5.3-1
+- Update to CouchDB 3.5.3
+- Repackage from the official RHEL9 RPM
+- Enable QuickJS by default
+
 * Thu Oct 30 2025 Adrien Vergé 3.5.0-2
 - Use systemd-sysusers for user 'couchdb' and drop group 'couchdb'
 
